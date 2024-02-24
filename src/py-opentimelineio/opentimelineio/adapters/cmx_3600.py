@@ -131,6 +131,11 @@ class EDLParser:
             edl_rate
         )
 
+        if clip_handler.clip_num == '001':
+            # This is the first clip in the timeline
+            self.timeline.global_start_time = record_in
+        #    self.timeline.duration = record_out - record_in
+
         src_duration = clip.duration()
         rec_duration = record_out - record_in
         if rec_duration != src_duration:
@@ -362,8 +367,14 @@ class EDLParser:
         for track in self.timeline.tracks:
             # if the source_range is the same as the available_range
             # then we don't need to set it at all.
+            # else if the source_range starts before 0, we need to set it to 0
             if track.source_range == track.available_range():
                 track.source_range = None
+            elif track.source_range.start_time < opentime.RationalTime(0, rate):
+                track.source_range = opentime.TimeRange(
+                    start_time=opentime.RationalTime(0, rate),
+                    duration=track.source_range.duration
+                )
 
 
 class ClipHandler:
