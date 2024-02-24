@@ -134,7 +134,6 @@ class EDLParser:
         if clip_handler.clip_num == '001':
             # This is the first clip in the timeline
             self.timeline.global_start_time = record_in
-        #    self.timeline.duration = record_out - record_in
 
         src_duration = clip.duration()
         rec_duration = record_out - record_in
